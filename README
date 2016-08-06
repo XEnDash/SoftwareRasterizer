@@ -1,0 +1,7 @@
+WIP texture mapped software rasterizer
+
+right now configured to load a "dog.obj" file and a "dog.tga" file from the data folder.
+
+obj loading and z buffering doesn't quite work well, but tetxure mapped triangle rasterization works
+
+by Daniel Shamir
