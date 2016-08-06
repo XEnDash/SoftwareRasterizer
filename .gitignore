@@ -1,0 +1,17 @@
+*.pdb
+*.ilk
+*.map
+*.log
+*.tlog
+*.obj
+*.idb
+*.lastbuildstate
+*.opensdf
+*.res
+
+*.bmp
+*.png
+*.tga
+
+/data/*.*
+/dependencies/*.*

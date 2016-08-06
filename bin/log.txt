@@ -1,0 +1,26 @@
+=== Log Initialized ===
+
+Allocation [ptr=0x551de8, size=24, file=(null), line=18694796]
+
+Allocation [ptr=0x4aa04d0, size=156, file=(null), line=18694956]
+
+Allocation [ptr=0x76f0020, size=1920000, file=(null), line=18694956]
+
+Allocation [ptr=0x6348048, size=138759, file=(null), line=18694796]
+
+Allocation [ptr=0x5f6fd0, size=24576, file=(null), line=18695148]
+
+Allocation [ptr=0x4acda50, size=16384, file=(null), line=18695148]
+
+Allocation [ptr=0x6369e58, size=122880, file=(null), line=18695148]
+
+Free [ptr=0x5f6fd0, file=..\src\WavefrontOBJ.cpp, line=174]
+
+Free [ptr=0x4acda50, file=..\src\WavefrontOBJ.cpp, line=175]
+
+Allocation [ptr=0x6387e60, size=262144, file=(null), line=18694796]
+
+Allocation [ptr=0x29c0020, size=786432, file=(null), line=18695128]
+
+Free [ptr=0x6387e60, file=..\src\Texture.cpp, line=27]
+
