@@ -9,7 +9,7 @@ bool CWavefrontOBJ::Load(char *file)
 	uint32 fsize = -1;
 	void *fdata = platform->ReadFromFile(file, &fsize);
 
-	if (fsize <= 0)
+	if (fsize <= 0 || fdata == 0)
 		return false;
 
 	int verts_slice = 2048;

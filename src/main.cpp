@@ -15,6 +15,8 @@
 
 #define FPS 60.0
 
+#define FILE_STRING_LIMIT 128
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	if (!CLog::Init("log.txt"))
@@ -28,6 +30,68 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	CRenderer *renderer = CRenderer::GetSingleton();
 
 	if (!renderer->Init(SCREEN_WIDTH, SCREEN_HEIGHT))
+		return -1;
+
+	// HACK(daniel): for debugging
+	if (*lpCmdLine == 0)
+		lpCmdLine = "../data/dog.obj ../data/dog.tga";
+	
+	char model_file[FILE_STRING_LIMIT];
+	model_file[0] = 0;
+
+	char tex_file[FILE_STRING_LIMIT];
+	tex_file[0] = 0;
+	
+	if (*lpCmdLine != 0)
+	{
+		int count = 0;
+
+		char *s = lpCmdLine;
+		char *d = model_file;
+		while (*s != ' ' && *s != 0)
+		{
+			*d = *s;
+
+			s++;
+			d++;
+
+			count++;
+			if (count >= FILE_STRING_LIMIT - 1)
+				return -1;
+		}
+
+		if (*s == 0)
+			return -1;
+
+		s++;
+
+		model_file[count] = 0;
+
+		d = tex_file;
+
+		count = 0;
+
+		while (*s != ' ' && *s != 0)
+		{
+			*d = *s;
+
+			s++;
+			d++;
+
+			count++;
+			if (count >= FILE_STRING_LIMIT - 1)
+				return -1;
+		}
+
+		tex_file[count] = 0;
+	}
+	
+	CWavefrontOBJ model;
+	if (!model.Load(model_file))
+		return -1;
+
+	CTexture tex;
+	if (!tex.Load(tex_file))
 		return -1;
 
 	uint64 old_time = platform->GetTime();
@@ -58,6 +122,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		
 		renderer->BeginDrawing();
 
+		renderer->DrawOBJ(&model, &tex);
+		
 		renderer->EndDrawing();
 
 		platform->UpdateWindow();

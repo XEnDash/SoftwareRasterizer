@@ -5,6 +5,7 @@
 #include "Matrix4.h"
 #include "Triangle.h"
 #include "Texture.h"
+#include "WavefrontOBJ.h"
 
 class CRenderer
 {
@@ -29,6 +30,8 @@ public:
 	void DrawTriangleTextured(CTriangle *t, CTexture *tex);
 
 	void DrawTextureStraight(CTexture *t, V2 loc);
+
+	void DrawOBJ(CWavefrontOBJ *obj, CTexture *tex);
 
 	void ProjectTriangle(V2 *a, V2 *b, V2 *c, CTriangle *t);
 private:

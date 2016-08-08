@@ -3,12 +3,7 @@
 #include "Platform.h"
 #include "Assert.h"
 
-#include "WavefrontOBJ.h"
-
 CRenderer *CRenderer::singleton = 0;
-
-CWavefrontOBJ model;
-CTexture tex;
 
 CRenderer *CRenderer::GetSingleton()
 {
@@ -44,12 +39,6 @@ bool32 CRenderer::Init(int32 screen_width, int32 screen_height)
 	
 	modelview.CreateIdentity();
 	
-	if (!model.Load("../data/dog.obj"))
-		return false;
-
-	if (!tex.Load("../data/dog.tga"))
-		return false;
-	
 	wireframe = false;
 	depth = false;
 	
@@ -59,46 +48,6 @@ bool32 CRenderer::Init(int32 screen_width, int32 screen_height)
 void CRenderer::BeginDrawing()
 {
 	ClearBuffers();
-
-	double dt = CPlatform::GetSingleton()->GetDT();
-	
-	static float angle = M_PI / 2;
-	angle += 0.01f * dt;
-	
-	CMatrix4 rot_x, rot_y, rot_z;
-	CMatrix4 rot_origin;
-	CMatrix4 scl;
-	CMatrix4 pos;
-
-	static float z = 15;
-	//z += 0.05f;
-	
-	rot_x.CreateRotationX(angle);
-	rot_y.CreateRotationY(angle);
-	rot_z.CreateRotationZ(angle);
-
-	rot_origin.CreateTranslation(0, 0, 0);
-	
-	scl.CreateScale(0.1f, 0.1f, 0.1f);
-	pos.CreateTranslation(0, 0, z);
-	
-	modelview.CreateIdentity();
-	modelview.Multiply(rot_origin);
-	//modelview.Multiply(rot_x);
-	modelview.Multiply(rot_y);
-	//modelview.Multiply(rot_z);
-	modelview.Multiply(scl);
-	modelview.Multiply(pos);
-
-	for (int i = 0; i < model.tris_num; i++)
-	{
-		CTriangle t = model.tris[i];
-
-		t.Transform(modelview);
-
-		DrawTriangleTextured(&t, &tex);
-		//DrawTriangle(&t, Color::red);
-	}
 }
 
 void CRenderer::EndDrawing()
@@ -250,13 +199,12 @@ void CRenderer::DrawTriangle(CTriangle *t, Color color)
 			V2 point = V2(x, y);
 			
 			float u = 0, v = 0, w = 0;
-
 			BarycentricCoords(a, b, c, point, &u, &v, &w);
 			
 			if (u >= 0 && v >= 0 && u + v < 1)
 			{
 				float one_over_depth = (1.0f / t->a.z) * u + (1.0f / t->b.z) * v + (1.0f / t->c.z) * w;
-				float depth = 1.0f / one_over_depth;
+				float depth = one_over_depth;
 
 				if (CheckAndUpdateDepthBuffer(x, y, depth))
 				{
@@ -317,8 +265,6 @@ void CRenderer::DrawTriangleTextured(CTriangle *t, CTexture *tex)
 					float one_over_depth = (1.0f / t->a.z) * u + (1.0f / t->b.z) * v + (1.0f / t->c.z) * w;
 					float depth = one_over_depth;
 
-					//float depth = t->a.z * u + t->a.z * v + t->a.z * w;
-
 					if (CheckAndUpdateDepthBuffer(x, y, depth))
 					{
 						Color color = tex->pixels[tx + ty * tex->w];
@@ -326,11 +272,6 @@ void CRenderer::DrawTriangleTextured(CTriangle *t, CTexture *tex)
 						Plot(x, y, color);
 					}
 				}
-				/*else
-				{
-				Color color = Color::white;
-				Plot(x, y, color);
-				}*/
 			}
 		}
 	}
@@ -344,6 +285,50 @@ void CRenderer::DrawTextureStraight(CTexture *t, V2 loc)
 		{
 			Plot(loc.x + x , loc.y + y, t->pixels[x + y * t->w]);
 		}
+	}
+}
+
+void CRenderer::DrawOBJ(CWavefrontOBJ *obj, CTexture *tex)
+{
+	// NOTE(daniel): most of the variables are for testing
+	double dt = CPlatform::GetSingleton()->GetDT();
+
+	static float angle = M_PI / 2;
+	angle += 0.01f * dt;
+
+	CMatrix4 rot_x, rot_y, rot_z;
+	CMatrix4 rot_origin;
+	CMatrix4 scl;
+	CMatrix4 pos;
+
+	static float z = 15;
+	//z += 0.05f;
+
+	rot_x.CreateRotationX(angle);
+	rot_y.CreateRotationY(angle);
+	rot_z.CreateRotationZ(angle);
+
+	rot_origin.CreateTranslation(0, 0, 0);
+
+	scl.CreateScale(0.1f, 0.1f, 0.1f);
+	pos.CreateTranslation(0, 0, z);
+
+	modelview.CreateIdentity();
+	modelview.Multiply(rot_origin);
+	//modelview.Multiply(rot_x);
+	modelview.Multiply(rot_y);
+	//modelview.Multiply(rot_z);
+	modelview.Multiply(scl);
+	modelview.Multiply(pos);
+
+	for (int i = 0; i < obj->tris_num; i++)
+	{
+		CTriangle t = obj->tris[i];
+
+		t.Transform(modelview);
+
+		DrawTriangleTextured(&t, tex);
+		//DrawTriangle(&t, Color::red);
 	}
 }
 

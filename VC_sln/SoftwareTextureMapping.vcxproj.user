@@ -7,10 +7,14 @@
     <LocalDebuggerCommand>SoftwareTextureMapping.exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>C:\Users\daniel\Desktop\SoftwareTextureMapping\bin\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>SoftwareTextureMapping.exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>C:\Users\daniel\Desktop\SoftwareTextureMapping\bin\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

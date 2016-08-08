@@ -143,6 +143,9 @@ void *CPlatform::ReadFromFile(char *filename, uint32 *size)
 	FILE *f;
 	fopen_s(&f, filename, "r");
 
+	if (!f)
+		return 0;
+
 	fseek(f, 0, SEEK_END);
 	*size = ftell(f);
 	fseek(f, 0, SEEK_SET);

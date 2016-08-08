@@ -3,17 +3,12 @@
 *.map
 *.log
 *.tlog
-*.obj
+obj/*.obj
 *.idb
 *.lastbuildstate
 *.opensdf
 *.res
 
-*.bmp
-*.png
-*.tga
-
-/data/*.*
 /dependencies/*.*
 
 *.txt
