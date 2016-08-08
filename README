@@ -1,7 +1,9 @@
 WIP texture mapped software rasterizer
 
-right now configured to load a "dog.obj" file and a "dog.tga" file from the data folder.
+right now configured to load a "dog.obj" file and a "dog.tga" file from the data folder unless given a different command line file names.
 
-obj loading and z buffering doesn't quite work well, but tetxure mapped triangle rasterization works
+to load a different obj model and texture do: "SoftwareTextureMapping.exe %obj_model_filename% %texture_filename%" or drag an OBJ model and texture into SoftwareTextureMapping.exe
+
+the texture mapping is affine, the scale is made for the dog.obj model so other models will appear small
 
 by Daniel Shamir
