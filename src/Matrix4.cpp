@@ -26,15 +26,19 @@ void CMatrix4::CreateIdentity()
 	this->m43 = 0.0f;
 }
 
-void CMatrix4::CreatePerspective(float fov, float ar, float near, float far)
+void CMatrix4::CreatePerspective(float fov, float w, float h, float near, float far)
 {
+	float ar = h / w;
 	float tan_half_fov = tanf(fov / 2.0f);
-
+	
 	this->m11 = 1.0f / (ar * tan_half_fov);
 	this->m22 = 1.0f / tan_half_fov;
 	this->m33 = (far + near) / (near - far);
 	this->m34 = -1.0f;
-	this->m43 = -(2.0f * far * near) / (far - near);
+	this->m43 = -(2.0f * far * near) / (near - far);
+	
+	//this->m41 = w / 2;
+	//this->m42 = h / 2;
 }
 
 void CMatrix4::CreateTranslation(float x, float y, float z)

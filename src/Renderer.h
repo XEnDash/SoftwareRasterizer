@@ -43,4 +43,5 @@ private:
 	CMatrix4 modelview;
 
 	bool wireframe;
+	bool depth;
 };

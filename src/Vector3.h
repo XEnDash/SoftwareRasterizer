@@ -36,6 +36,8 @@ public:
 	float Length() { return sqrt(this->x * this->x + this->y * this->y + this->z * this->z); }
 	void Normalize() { float l = this->Length(); this->x /= l; this->y /= l; this->z /= l; }
 
+	V2 ToV2() { return V2(this->x, this->y); }
+
 	void Transform(CMatrix4 &m) 
 	{
 		float a = this->x;

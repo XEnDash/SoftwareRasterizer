@@ -151,10 +151,15 @@ bool CWavefrontOBJ::Load(char *file)
 				tris[tris_num].b = b;
 				tris[tris_num].c = c;
 
-				tris[tris_num].a_tex = a_tex;
-				tris[tris_num].b_tex = b_tex;
-				tris[tris_num].c_tex = c_tex;
+				//tris[tris_num].a_tex = a_tex;
+				//tris[tris_num].b_tex = b_tex;
+				//tris[tris_num].c_tex = c_tex;
 				
+				// HACK(daniel): texture coordinates are upside down, we fix this here
+				tris[tris_num].a_tex = V2(a_tex.x, 1.0f - a_tex.y);
+				tris[tris_num].b_tex = V2(b_tex.x, 1.0f - b_tex.y);
+				tris[tris_num].c_tex = V2(c_tex.x, 1.0f - c_tex.y);
+
 				tris_num++;
 
 				if (tris_num % tris_slice == 0)
@@ -173,4 +178,6 @@ bool CWavefrontOBJ::Load(char *file)
 
 	ldelete(verts);
 	ldelete(texs);
+
+	return true;
 }

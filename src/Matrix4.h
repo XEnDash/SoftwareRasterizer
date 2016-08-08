@@ -9,7 +9,7 @@ public:
 	CMatrix4() { CreateIdentity(); }
 
 	void CreateIdentity();
-	void CreatePerspective(float fov, float ar, float near, float far);
+	void CreatePerspective(float fov, float w, float h, float near, float far);
 
 	void CreateTranslation(float x, float y, float z);
 	void CreateScale(float x, float y, float z);
