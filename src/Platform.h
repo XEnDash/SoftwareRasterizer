@@ -4,6 +4,13 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+struct Gamepad
+{
+	bool u, d, l, r;
+	bool su, sd, sl, sr;
+	bool ew, ed, ea;
+};
+
 class CPlatform
 {
 public:
@@ -35,9 +42,14 @@ public:
 	static void *Reallocate(void *ptr, uint64 size);
 	static void Free(void *ptr);
 
+	char *GetBasePath() { return SDL_GetBasePath(); }
+
+	Gamepad *GetGamepad() { return &gamepad; }
+	Gamepad *GetPrevGamepad() { return &prev_gamepad; }
+
 	uint32 GetTime();
 	void Sleep(double sleep);
-	
+
 	void SetDT(double dt) { this->dt = dt; }
 	double GetDT() { return this->dt; }
 	
@@ -45,6 +57,9 @@ private:
 	SDL_Window *sdl_window;
 	SDL_Surface *sdl_window_surface;
 	bool32 running;
+
+	Gamepad gamepad;
+	Gamepad prev_gamepad;
 
 	double dt;
 };

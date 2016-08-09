@@ -28,7 +28,7 @@ void CMatrix4::CreateIdentity()
 
 void CMatrix4::CreatePerspective(float fov, float w, float h, float near, float far)
 {
-	float ar = h / w;
+	float ar = w / h;
 	float tan_half_fov = tanf(fov / 2.0f);
 	
 	this->m11 = 1.0f / (ar * tan_half_fov);

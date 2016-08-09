@@ -55,6 +55,8 @@ bool32 CPlatform::Init(int32 width, int32 height)
 		return false;
 	}
 	
+	gamepad = { 0 };
+
 	dt = 1.0;
 
 	running = true;
@@ -64,6 +66,8 @@ bool32 CPlatform::Init(int32 width, int32 height)
 
 void CPlatform::HandleEvents()
 {
+	prev_gamepad = gamepad;
+
 	SDL_Event ev;
 	while (SDL_PollEvent(&ev))
 	{
@@ -72,6 +76,108 @@ void CPlatform::HandleEvents()
 			case SDL_QUIT:
 			{
 				SetRunning(false);
+			} break;
+
+			case SDL_KEYDOWN:
+			{
+				switch (ev.key.keysym.sym)
+				{
+					case SDLK_UP:
+					{
+						gamepad.u = true;
+					} break;
+					case SDLK_DOWN:
+					{
+						gamepad.d = true;
+					} break;
+					case SDLK_LEFT:
+					{
+						gamepad.l = true;
+					} break;
+					case SDLK_RIGHT:
+					{
+						gamepad.r = true;
+					} break;
+					case SDLK_w:
+					{
+						gamepad.su = true;
+					} break;
+					case SDLK_s:
+					{
+						gamepad.sd = true;
+					} break;
+					case SDLK_a:
+					{
+						gamepad.sl = true;
+					} break;
+					case SDLK_d:
+					{
+						gamepad.sr = true;
+					} break;
+					case SDLK_r:
+					{
+						gamepad.ew = true;
+					} break;
+					case SDLK_t:
+					{
+						gamepad.ed = true;
+					} break;
+					case SDLK_y:
+					{
+						gamepad.ea = true;
+					} break;
+				}
+			} break;
+
+			case SDL_KEYUP:
+			{
+				switch (ev.key.keysym.sym)
+				{
+				case SDLK_UP:
+				{
+					gamepad.u = false;
+				} break;
+				case SDLK_DOWN:
+				{
+					gamepad.d = false;
+				} break;
+				case SDLK_LEFT:
+				{
+					gamepad.l = false;
+				} break;
+				case SDLK_RIGHT:
+				{
+					gamepad.r = false;
+				} break;
+				case SDLK_w:
+				{
+					gamepad.su = false;
+				} break;
+				case SDLK_s:
+				{
+					gamepad.sd = false;
+				} break;
+				case SDLK_a:
+				{
+					gamepad.sl = false;
+				} break;
+				case SDLK_d:
+				{
+					gamepad.sr = false;
+				} break;
+				case SDLK_r:
+				{
+					gamepad.ew = false;
+				} break;
+				case SDLK_t:
+				{
+					gamepad.ed = false;
+				} break;
+				case SDLK_y:
+				{
+					gamepad.ea = false;
+				} break;
+				}
 			} break;
 		}
 	}

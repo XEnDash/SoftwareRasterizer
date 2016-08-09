@@ -7,6 +7,7 @@
 #include "Platform.h"
 #include "Renderer.h"
 #include "HighResTimer.h"
+#include "String.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -19,7 +20,14 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	if (!CLog::Init("log.txt"))
+	char logfile[128];
+	int bytes = GetModuleFileName(NULL, logfile, 96);
+	if (bytes == 0)
+		return -1;
+	
+	StringCopy(&logfile[bytes - 26], "log.txt"); // HACK(danile): 26 is the length of "SoftwareTextureMapping.exe"
+
+	if (!CLog::Init(logfile))
 		return false;
 	
 	CPlatform *platform = CPlatform::GetSingleton();

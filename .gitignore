@@ -3,12 +3,12 @@
 *.map
 *.log
 *.tlog
-obj/*.obj
 *.idb
 *.lastbuildstate
 *.opensdf
 *.res
 
+/data/*.*
 /dependencies/*.*
 
 *.txt

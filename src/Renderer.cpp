@@ -41,6 +41,7 @@ bool32 CRenderer::Init(int32 screen_width, int32 screen_height)
 	
 	wireframe = false;
 	depth = false;
+	antialiazing = true;
 	
 	return true;
 }
@@ -48,6 +49,18 @@ bool32 CRenderer::Init(int32 screen_width, int32 screen_height)
 void CRenderer::BeginDrawing()
 {
 	ClearBuffers();
+
+	Gamepad *gamepad = CPlatform::GetSingleton()->GetGamepad();
+	Gamepad *prev_gamepad = CPlatform::GetSingleton()->GetPrevGamepad();
+	
+	if (gamepad->ew && !prev_gamepad->ew)
+		wireframe = !wireframe;
+
+	if (gamepad->ed && !prev_gamepad->ed)
+		depth = !depth;
+
+	if (gamepad->ea && !prev_gamepad->ea)
+		antialiazing = !antialiazing;
 }
 
 void CRenderer::EndDrawing()
@@ -61,7 +74,7 @@ void CRenderer::EndDrawing()
 			{
 				float depth = d[x + y * window_width];
 
-				float c = depth;
+				float c = depth * 255.0f;
 
 				if (depth > 255)
 					c = 255;
@@ -205,7 +218,7 @@ void CRenderer::DrawTriangle(CTriangle *t, Color color)
 			{
 				float one_over_depth = (1.0f / t->a.z) * u + (1.0f / t->b.z) * v + (1.0f / t->c.z) * w;
 				float depth = one_over_depth;
-
+				
 				if (CheckAndUpdateDepthBuffer(x, y, depth))
 				{
 					Plot(x, y, color);
@@ -217,6 +230,10 @@ void CRenderer::DrawTriangle(CTriangle *t, Color color)
 
 void CRenderer::DrawTriangleTextured(CTriangle *t, CTexture *tex)
 {
+	// HACK(daniel): weird things happen when we get close to zero
+	if (t->a.z < 3 || t->b.z < 3 || t->c.z < 3)
+		return;
+	
 	V2 a, b, c;
 	ProjectTriangle(&a, &b, &c, t);
 
@@ -268,6 +285,19 @@ void CRenderer::DrawTriangleTextured(CTriangle *t, CTexture *tex)
 					if (CheckAndUpdateDepthBuffer(x, y, depth))
 					{
 						Color color = tex->pixels[tx + ty * tex->w];
+						if (antialiazing)
+						{
+							if (tx + 1 < tex->w && ty + 1 < tex->h)
+							{
+								color += tex->pixels[(tx + 1) + ty * tex->w];
+								color += tex->pixels[tx + (ty + 1) * tex->w];
+								color += tex->pixels[(tx + 1) + (ty + 1) * tex->w];
+								
+								color.r /= 4;
+								color.g /= 4;
+								color.b /= 4;
+							}
+						}
 						
 						Plot(x, y, color);
 					}
@@ -290,34 +320,60 @@ void CRenderer::DrawTextureStraight(CTexture *t, V2 loc)
 
 void CRenderer::DrawOBJ(CWavefrontOBJ *obj, CTexture *tex)
 {
+	CPlatform *platform = CPlatform::GetSingleton();
 	// NOTE(daniel): most of the variables are for testing
-	double dt = CPlatform::GetSingleton()->GetDT();
+	double dt = platform->GetDT();
 
-	static float angle = M_PI / 2;
-	angle += 0.01f * dt;
+	Gamepad *gamepad = platform->GetGamepad();
 
+	static float a_x = 0, a_y = 0, a_z = 0;
+
+	static float x = 0, y = 0, z = 25;
+
+	float speed = 0.1f * dt;
+	if (gamepad->u)
+		y += speed;
+	if (gamepad->d)
+		y -= speed;
+
+	if (gamepad->l)
+		x += speed;
+	if (gamepad->r)
+		x -= speed;
+
+	float rspeed = M_PI / 180.0f * dt;
+	if (gamepad->su)
+		z += speed;
+	if (gamepad->sd)
+		z -= speed;
+
+	if (gamepad->sl)
+		a_y += speed;
+	if (gamepad->sr)
+		a_y -= speed;
+
+	if (z < 1)
+		z = 1;
+	
 	CMatrix4 rot_x, rot_y, rot_z;
 	CMatrix4 rot_origin;
 	CMatrix4 scl;
 	CMatrix4 pos;
 
-	static float z = 15;
-	//z += 0.05f;
-
-	rot_x.CreateRotationX(angle);
-	rot_y.CreateRotationY(angle);
-	rot_z.CreateRotationZ(angle);
+	rot_x.CreateRotationX(a_x);
+	rot_y.CreateRotationY(a_y);
+	rot_z.CreateRotationZ(a_z);
 
 	rot_origin.CreateTranslation(0, 0, 0);
 
 	scl.CreateScale(0.1f, 0.1f, 0.1f);
-	pos.CreateTranslation(0, 0, z);
-
+	pos.CreateTranslation(x, y, z);
+	
 	modelview.CreateIdentity();
 	modelview.Multiply(rot_origin);
-	//modelview.Multiply(rot_x);
+	modelview.Multiply(rot_x);
 	modelview.Multiply(rot_y);
-	//modelview.Multiply(rot_z);
+	modelview.Multiply(rot_z);
 	modelview.Multiply(scl);
 	modelview.Multiply(pos);
 

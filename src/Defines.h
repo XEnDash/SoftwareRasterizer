@@ -21,12 +21,35 @@ class Color
 {
 public:
 	int r, g, b;
+	
+	Color() { this->r = 0; this->g = 0; this->b = 0; }
+	Color(int r, int g, int b) { this->r = r; this->g = g; this->b = b; }
 
 	static const Color white;
 	static const Color black;
 	static const Color red;
 	static const Color green;
 	static const Color blue;
+	
+	Color operator +(Color &b) { return Color(this->r + b.r, this->g + b.g, this->b + b.b); }
+	Color operator -(Color &b) { return Color(this->r - b.r, this->g - b.g, this->b - b.b); }
+	Color operator *(Color &b) { return Color(this->r * b.r, this->g * b.g, this->b * b.b); }
+	Color operator /(Color &b) { return Color(this->r / b.r, this->g / b.g, this->b / b.b); }
+	
+	void operator +=(Color &b) { this->r += b.r; this->g += b.g; this->b += b.b; }
+	void operator -=(Color &b) { this->r -= b.r; this->g -= b.g; this->b -= b.b; }
+	void operator *=(Color &b) { this->r *= b.r; this->g *= b.g; this->b *= b.b; }
+	void operator /=(Color &b) { this->r /= b.r; this->g /= b.g; this->b /= b.b; }
+
+	Color operator +(float &b) { return Color(this->r + b, this->g + b, this->b + b); }
+	Color operator -(float &b) { return Color(this->r - b, this->g - b, this->b - b); }
+	Color operator *(float &b) { return Color(this->r * b, this->g * b, this->b * b); }
+	Color operator /(float &b) { return Color(this->r / b, this->g / b, this->b / b); }
+	
+	void operator +=(int &b) { this->r += b; this->g += b; this->b += b; }
+	void operator -=(int &b) { this->r -= b; this->g -= b; this->b -= b; }
+	void operator *=(int &b) { this->r *= b; this->g *= b; this->b *= b; }
+	void operator /=(int &b) { this->r /= b; this->g /= b; this->b /= b; }
 };
 
 #define RGBtob32(r, g, b) ((r<<16) | (g<<8) | (b))

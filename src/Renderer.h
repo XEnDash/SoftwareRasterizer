@@ -47,4 +47,5 @@ private:
 
 	bool wireframe;
 	bool depth;
+	bool antialiazing;
 };
